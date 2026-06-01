@@ -7,7 +7,7 @@ __pycache__/
 
 # Firebase
 firebase_key.json
-*-firebase-*.json
+academic-chatbot-d2876*.json
 
 # Uploads
 static/submissions/
