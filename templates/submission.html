@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Assignment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #eef6f8;
+            color: #1f2937;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 28px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-weight: 700;
+            color: #c98a00;
+            font-size: 22px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #526174;
+            margin-right: 24px;
+            font-size: 15px;
+        }
+
+        .nav a.active {
+            color: #0ea5b7;
+            border-bottom: 3px solid #0ea5b7;
+            padding-bottom: 24px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 24px;
+        }
+
+        .assignment-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 28px;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background: #ec5aa6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+        }
+
+        .assignment-title {
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .description {
+            margin-top: 20px;
+            color: #526174;
+            line-height: 1.7;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+
+        .upload-box:hover {
+            border-color: #1aa6a6;
+            background: #f8ffff;
+        }
+
+        .upload-box input {
+            margin-top: 18px;
+        }
+
+        .btn {
+            margin-top: 28px;
+            background: #1aa6a6;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        #submitWrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            opacity: 0.92;
+        }
+
+        .status {
+            margin-top: 18px;
+            color: #1aa6a6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">iTa'LeEM</div>
+        <div class="nav">
+            <a href="/inter">Dashboard</a>
+            <a href="/materials" class="active">My courses</a>
+            <a href="#">ITaleem Tutorials</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- ASSIGNMENT INFO -->
+        <div class="assignment-card">
+
+            <div class="title-row">
+
+                <div class="icon">
+                    📄
+                </div>
+
+                <div>
+                    <div class="assignment-title" id="assignmentTitle">
+                        Loading assignment...
+                    </div>
+
+                    <p id="courseName">
+                        Loading course...
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="description" id="assignmentDescription">
+                Loading description...
+            </div>
+
+        </div>
+
+        <!-- UPLOAD SECTION -->
+        <div class="upload-card">
+
+            <h2>Upload Submission</h2>
+
+            <div class="upload-box">
+
+                <p>
+                    Drag & drop your assignment file here
+                </p>
+
+                <p>
+                    or
+                </p>
+
+                <input type="file" id="submissionFile">
+
+            </div>
+
+            <div id="submitWrapper">
+                <button class="btn" onclick="submitAssignment()">
+                    Submit Assignment
+                </button>
+            </div>
+
+            <div class="status" id="uploadStatus"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const courseCode = "{{ course_code }}";
+        const materialId = "{{ material_id }}";
+
+        async function loadAssignment() {
+
+            const uid = localStorage.getItem("uid");
+
+            const res = await fetch("/get-course-materials", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    courseCode: courseCode
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.status !== "success") return;
+
+            const assignment =
+                data.materials.find(item => item.id === materialId);
+
+            if (!assignment) return;
+
+            document.getElementById("assignmentTitle").innerText =
+                assignment.title;
+
+            document.getElementById("courseName").innerText =
+                courseCode;
+
+            document.getElementById("assignmentDescription").innerText =
+                assignment.description || "No description provided.";
+        }
+
+        async function submitAssignment() {
+
+            const uid = localStorage.getItem("uid");
+
+            const fileInput =
+                document.getElementById("submissionFile");
+
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            const formData = new FormData();
+
+            formData.append("file", file);
+            formData.append("uid", uid);
+            formData.append("courseCode", courseCode);
+            formData.append("materialId", materialId);
+
+            document.getElementById("uploadStatus").innerText =
+                "Uploading...";
+
+            const res = await fetch("/upload-submission", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (data.status === "success") {
+
+                document.getElementById("uploadStatus").innerText =
+                    "Submission uploaded successfully.";
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        `/submission-status/${courseCode}/${materialId}`;
+
+                }, 1000);
+
+            } else {
+
+                document.getElementById("uploadStatus").innerText =
+                    "Upload failed.";
+
+            }
+        }
+
+        loadAssignment();
+
+    </script>
+    <div id="aicasChatbotBox" style="display:none;">
+        {% include "chatbot.html" %}
+    </div>
+
+    <script>
+
+        async function checkAicasAccess() {
+
+            const uid = localStorage.getItem("uid");
+
+            if (!uid) return;
+
+            const res = await fetch("/check-aicas-status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid
+                })
+            });
+
+            const data = await res.json();
+
+            if (
+                data.status === "success" &&
+                data.aicasStatus === true
+            ) {
+                document.getElementById("aicasChatbotBox").style.display = "block";
+            }
+        }
+
+        checkAicasAccess();
+
+    </script>
+
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+
+</body>
+
+</html>

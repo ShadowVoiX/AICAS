@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #eef6f8;
+            color: #263244;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 28px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-weight: 700;
+            color: #c98a00;
+            font-size: 22px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #526174;
+            margin-right: 24px;
+            font-size: 15px;
+        }
+
+        .nav a.active {
+            color: #0ea5b7;
+            border-bottom: 3px solid #0ea5b7;
+            padding-bottom: 24px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 60px 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 18px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 28px;
+            border-bottom: 1px solid #cbd5e1;
+            margin-bottom: 18px;
+        }
+
+        .tabs span {
+            padding-bottom: 16px;
+            color: #526174;
+            font-size: 14px;
+        }
+
+        .tabs .active {
+            color: #0ea5b7;
+            border-bottom: 3px solid #0ea5b7;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .toolbar select,
+        .toolbar input {
+            padding: 12px 16px;
+            border: 1px solid #dbe3ea;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .toolbar input {
+            width: 260px;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 26px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            min-height: 285px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-cover {
+            height: 145px;
+            position: relative;
+            background:
+                linear-gradient(135deg, rgba(80, 160, 230, .95), rgba(90, 180, 255, .85)),
+                repeating-linear-gradient(45deg, transparent 0 20px, rgba(255, 255, 255, .12) 20px 40px);
+        }
+
+        .course-card:nth-child(2n) .course-cover {
+            background:
+                linear-gradient(135deg, rgba(135, 110, 245, .95), rgba(170, 150, 255, .85)),
+                repeating-radial-gradient(circle, rgba(255, 255, 255, .15) 0 8px, transparent 8px 38px);
+        }
+
+        .course-card:nth-child(3n) .course-cover {
+            background:
+                linear-gradient(135deg, rgba(42, 155, 220, .95), rgba(112, 190, 255, .85)),
+                repeating-linear-gradient(60deg, rgba(255, 255, 255, .15) 0 2px, transparent 2px 38px);
+        }
+
+        .course-card:nth-child(4n) .course-cover {
+            background:
+                linear-gradient(135deg, rgba(0, 170, 140, .95), rgba(0, 200, 170, .85)),
+                repeating-radial-gradient(circle, rgba(0, 0, 0, .08) 0 10px, transparent 10px 45px);
+        }
+
+        .menu-dot {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .course-info {
+            padding: 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .faculty-tag {
+            background: #eef2f7;
+            color: #334155;
+            font-size: 12px;
+            padding: 6px 10px;
+            width: fit-content;
+            margin-top: -36px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .course-title {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.45;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .view-btn {
+            margin-top: auto;
+            align-self: flex-end;
+            padding: 9px 16px;
+            border: 1px solid #0ea5b7;
+            color: #0ea5b7;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .view-btn:hover {
+            background: #0ea5b7;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                overflow-x: auto;
+                padding: 0 16px;
+            }
+
+            .container {
+                padding: 32px 16px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .toolbar input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">iTa'LeEM</div>
+        <div class="nav">
+            <a href="/inter">Dashboard</a>
+            <a href="/materials" class="active">My courses</a>
+            <a href="#">ITaleem Tutorials</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>My courses</h1>
+
+        <h2>Course overview</h2>
+
+        <div class="tabs">
+            <span class="active">All</span>
+            <span>In progress</span>
+            <span>Future</span>
+            <span>Past</span>
+            <span>Starred</span>
+            <span>Removed from view</span>
+        </div>
+
+        <div class="toolbar">
+            <select>
+                <option>Sort by course name</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search">
+        </div>
+
+        <div class="course-grid" id="courseGrid">
+            Loading courses...
+        </div>
+    </div>
+
+    <script>
+        let allCourses = [];
+
+        async function loadCourses() {
+            const uid = localStorage.getItem("uid");
+            const courseGrid = document.getElementById("courseGrid");
+
+            const response = await fetch("/get-courses", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ uid })
+            });
+
+            const data = await response.json();
+
+            if (data.status !== "success") {
+                courseGrid.innerHTML = "<p>Failed to load courses.</p>";
+                return;
+            }
+
+            allCourses = data.courses;
+            displayCourses(allCourses);
+        }
+
+        function displayCourses(courses) {
+            const courseGrid = document.getElementById("courseGrid");
+
+            if (courses.length === 0) {
+                courseGrid.innerHTML = "<p>No courses found.</p>";
+                return;
+            }
+
+            courseGrid.innerHTML = "";
+
+            courses.forEach(course => {
+                courseGrid.innerHTML += `
+                <div class="course-card">
+                    <div class="course-cover">
+                        <div class="menu-dot">...</div>
+                    </div>
+
+                    <div class="course-info">
+                        <div class="faculty-tag">COURSE MATERIAL</div>
+
+                        <div class="course-title">
+                            ${course.code} ${course.name}
+                        </div>
+
+                        <button class="view-btn" onclick="window.location.href='/course/${course.code}'">
+                            View Course
+                        </button>
+                    </div>
+                </div>
+            `;
+            });
+        }
+
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const keyword = this.value.toLowerCase();
+
+            const filtered = allCourses.filter(course =>
+                course.code.toLowerCase().includes(keyword) ||
+                course.name.toLowerCase().includes(keyword)
+            );
+
+            displayCourses(filtered);
+        });
+
+        loadCourses();
+    </script>
+    <div id="aicasChatbotBox" style="display:none;">
+        {% include "chatbot.html" %}
+    </div>
+
+    <script>
+
+        async function checkAicasAccess() {
+
+            const uid = localStorage.getItem("uid");
+
+            if (!uid) return;
+
+            const res = await fetch("/check-aicas-status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid
+                })
+            });
+
+            const data = await res.json();
+
+            if (
+                data.status === "success" &&
+                data.aicasStatus === true
+            ) {
+                document.getElementById("aicasChatbotBox").style.display = "block";
+            }
+        }
+
+        checkAicasAccess();
+
+    </script>
+
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+</body>
+
+</html>

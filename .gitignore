@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Firebase
+firebase_key.json
+*-firebase-*.json
+
+# Uploads
+static/submissions/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store

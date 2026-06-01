@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Course Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #eef6f8;
+            color: #1f2937;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 28px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-weight: 700;
+            color: #c98a00;
+            font-size: 22px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #526174;
+            margin-right: 24px;
+            font-size: 15px;
+        }
+
+        .nav a.active {
+            color: #0ea5b7;
+            border-bottom: 3px solid #0ea5b7;
+            padding-bottom: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 24px;
+        }
+
+        .course-hero {
+            height: 260px;
+            border-radius: 14px;
+            padding: 28px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background:
+                linear-gradient(to bottom, rgba(30, 90, 150, 0.45), rgba(0, 0, 0, 0.9)),
+                repeating-linear-gradient(45deg, #2f75b5, #2f75b5 20px, #326fa8 20px, #326fa8 40px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .tag {
+            background: white;
+            color: #1aa6a6;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+
+        .course-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .lecturer-row {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 28px;
+            margin-top: 24px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .tabs a {
+            padding: 14px 0;
+            text-decoration: none;
+            color: #475569;
+        }
+
+        .tabs a.active {
+            color: #1aa6a6;
+            border-bottom: 3px solid #1aa6a6;
+        }
+
+        .section-card {
+            margin-top: 28px;
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .announcement {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            background: #ef5b4c;
+            color: white;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .announcement h3 {
+            margin: 0;
+            color: #1aa6a6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo">iTa'LeEM</div>
+        <div class="nav">
+            <a href="/inter">Dashboard</a>
+            <a href="/materials" class="active">My courses</a>
+            <a href="#">ITaleem Tutorials</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="course-hero">
+            <div class="tag">COURSE MATERIAL</div>
+            <div class="course-title" id="courseTitle">Loading course...</div>
+
+            <div class="lecturer-row">
+                <span id="lecturerName">Lecturer: Loading...</span>
+                <span id="courseTime"></span>
+                <span id="courseVenue"></span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <a href="#" class="active">Course</a>
+            <a href="#">Participants</a>
+            <a href="#">Grades</a>
+            <a href="#">Competencies</a>
+        </div>
+
+        <div class="section-card">
+            <h2>General</h2>
+
+            <div class="announcement">
+                <div class="icon">💬</div>
+                <div>
+                    <p>Forum</p>
+                    <h3>Announcements</h3>
+                </div>
+            </div>
+            <div id="materialsContainer"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const courseCode = "{{ course_code }}";
+
+        async function loadCoursePage() {
+            const uid = localStorage.getItem("uid");
+
+            const response = await fetch("/get-courses", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ uid })
+            });
+
+            const data = await response.json();
+
+            if (data.status !== "success") {
+                document.getElementById("courseTitle").innerText = "Course not found";
+                return;
+            }
+
+            const course = data.courses.find(c => c.code === courseCode);
+
+            if (!course) {
+                document.getElementById("courseTitle").innerText = "Course not found";
+                return;
+            }
+
+            document.title = course.code + " - " + course.name;
+
+            document.getElementById("courseTitle").innerText =
+                course.code + " " + course.name;
+
+            document.getElementById("lecturerName").innerText =
+                "👤 " + course.lecturer;
+        }
+        async function openAssignment(materialId) {
+            const uid = localStorage.getItem("uid");
+
+            const res = await fetch("/check-submission", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    courseCode: courseCode,
+                    materialId: materialId
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.submitted) {
+                window.location.href = `/submission-status/${courseCode}/${materialId}`;
+            } else {
+                window.location.href = `/submission/${courseCode}/${materialId}`;
+            }
+        }
+
+        loadCoursePage();
+    </script>
+    <script>
+
+        async function loadCourseMaterials() {
+
+            const uid = localStorage.getItem("uid");
+
+            const res = await fetch("/get-course-materials", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    courseCode: courseCode
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.status !== "success") return;
+
+            const container = document.getElementById("materialsContainer");
+
+            container.innerHTML = "";
+
+            data.materials.forEach(item => {
+
+                let icon = "📁";
+
+                if (item.type === "Assignment") {
+                    icon = "📝";
+                }
+                else if (item.type === "Quiz") {
+                    icon = "❓";
+                }
+                else if (item.type === "Announcement") {
+                    icon = "📢";
+                }
+                else if (item.type === "Notes") {
+                    icon = "📘";
+                }
+
+                container.innerHTML += `
+        
+        <div
+    ${item.type === "Assignment"
+                        ? `onclick="openAssignment('${item.id}')"`
+                        : ""
+                    }
+    style="
+    margin-top:20px;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:white;
+    cursor:${item.type === "Assignment" ? "pointer" : "default"};
+">
+
+            <div style="
+                display:flex;
+                gap:18px;
+                align-items:center;
+            ">
+
+                <div class="icon">
+                    ${icon}
+                </div>
+
+                <div>
+                    <p>${item.type}</p>
+                    <h3 style="margin:0;color:#1aa6a6;">
+                        ${item.title}
+                    </h3>
+
+                    <small>
+                        ${item.description || ""}
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+        `;
+            });
+        }
+
+        loadCourseMaterials();
+
+    </script>
+    <div id="aicasChatbotBox" style="display:none;">
+        {% include "chatbot.html" %}
+    </div>
+
+    <script>
+
+        async function checkAicasAccess() {
+
+            const uid = localStorage.getItem("uid");
+
+            if (!uid) return;
+
+            const res = await fetch("/check-aicas-status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid
+                })
+            });
+
+            const data = await res.json();
+
+            if (
+                data.status === "success" &&
+                data.aicasStatus === true
+            ) {
+                document.getElementById("aicasChatbotBox").style.display = "block";
+            }
+        }
+
+        checkAicasAccess();
+
+    </script>
+
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+
+</body>
+
+</html>

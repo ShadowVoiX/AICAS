@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+    <title>Assignment Submission</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #eef6f8;
+            color: #1f2937;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 28px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-weight: 700;
+            color: #c98a00;
+            font-size: 22px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #526174;
+            margin-right: 24px;
+            font-size: 15px;
+        }
+
+        .nav a.active {
+            color: #0ea5b7;
+            border-bottom: 3px solid #0ea5b7;
+            padding-bottom: 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #c98a00;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 24px;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .assignment-icon {
+            width: 60px;
+            height: 60px;
+            background: #ec5aa6;
+            border-radius: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn {
+            border: 1px solid #1aa6a6;
+            background: white;
+            color: #1aa6a6;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+
+        td {
+            border: 1px solid #e5e7eb;
+            padding: 16px;
+        }
+
+        td:first-child {
+            width: 220px;
+            color: #526174;
+        }
+
+        .green {
+            background: #d1f3d1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">iTa'LeEM</div>
+        <div class="nav">
+            <a href="/inter">Dashboard</a>
+            <a href="/materials" class="active">My courses</a>
+            <a href="#">ITaleem Tutorials</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="title-row">
+            <div class="assignment-icon">📄</div>
+            <h1 id="assignmentTitle">Loading assignment...</h1>
+        </div>
+
+        <div class="info-box">
+            <p><b>Opened:</b> Thursday, 7 May 2026, 2:00 PM</p>
+            <p><b>Due:</b> Friday, 15 May 2026, 11:00 PM</p>
+            <hr>
+            <p id="assignmentDescription">Loading description...</p>
+        </div>
+
+        <div class="info-box">
+            <button class="btn">Edit submission</button>
+            <button class="btn" onclick="removeSubmission()">Remove submission</button>
+
+            <h2>Submission status</h2>
+
+            <table>
+                <tr>
+                    <td>Submission status</td>
+                    <td class="green">Submitted for grading</td>
+                </tr>
+                <tr>
+                    <td>Grading status</td>
+                    <td>Not graded</td>
+                </tr>
+                <tr>
+                    <td>Time remaining</td>
+                    <td class="green">Assignment was submitted early</td>
+                </tr>
+                <tr>
+                    <td>Last modified</td>
+                    <td id="lastModified">Loading...</td>
+                </tr>
+                <tr>
+                    <td>File submissions</td>
+                    <td id="fileSubmission">Loading...</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const courseCode = "{{ course_code }}";
+        const materialId = "{{ material_id }}";
+
+        async function loadSubmissionPage() {
+
+            const uid = localStorage.getItem("uid");
+
+            // =========================
+            // LOAD ASSIGNMENT
+            // =========================
+            const res = await fetch("/get-course-materials", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    courseCode: courseCode
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.status !== "success") {
+                document.getElementById("assignmentTitle").innerText =
+                    "Assignment not found";
+                return;
+            }
+
+            const assignment =
+                data.materials.find(item => item.id === materialId);
+
+            if (!assignment) {
+                document.getElementById("assignmentTitle").innerText =
+                    "Assignment not found";
+                return;
+            }
+
+            document.getElementById("assignmentTitle").innerText =
+                assignment.title;
+
+            document.getElementById("assignmentDescription").innerText =
+                assignment.description || "No description provided.";
+
+            // =========================
+            // LOAD SUBMISSION
+            // =========================
+            const submissionRes = await fetch("/get-submission-detail", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    courseCode: courseCode,
+                    materialId: materialId
+                })
+            });
+
+            const submissionData = await submissionRes.json();
+
+            if (
+                submissionData.status === "success" &&
+                submissionData.submitted
+            ) {
+
+                document.getElementById("lastModified").innerText =
+                    submissionData.submittedAt;
+
+                document.getElementById("fileSubmission").innerHTML = `
+                📄 
+                <a href="${submissionData.fileUrl}" target="_blank">
+                    ${submissionData.fileName}
+                </a>
+            `;
+            }
+            else {
+
+                document.getElementById("lastModified").innerText =
+                    "Not submitted yet";
+
+                document.getElementById("fileSubmission").innerText =
+                    "No file uploaded";
+            }
+        }
+        async function removeSubmission() {
+            const confirmRemove = confirm("Are you sure you want to remove this submission?");
+
+            if (!confirmRemove) return;
+
+            const uid = localStorage.getItem("uid");
+
+            const res = await fetch("/remove-submission", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    courseCode: courseCode,
+                    materialId: materialId
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.status === "success") {
+                alert("Submission removed successfully.");
+
+                window.location.href =
+                    `/submission/${courseCode}/${materialId}`;
+            } else {
+                alert("Failed to remove submission.");
+            }
+        }
+
+        loadSubmissionPage();
+    </script>
+    </script>
+    <div id="aicasChatbotBox" style="display:none;">
+        {% include "chatbot.html" %}
+    </div>
+
+    <script>
+
+        async function checkAicasAccess() {
+
+            const uid = localStorage.getItem("uid");
+
+            if (!uid) return;
+
+            const res = await fetch("/check-aicas-status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid
+                })
+            });
+
+            const data = await res.json();
+
+            if (
+                data.status === "success" &&
+                data.aicasStatus === true
+            ) {
+                document.getElementById("aicasChatbotBox").style.display = "block";
+            }
+        }
+
+        checkAicasAccess();
+
+    </script>
+
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+
+</body>
+
+</html>

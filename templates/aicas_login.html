@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>iTa'LeEm Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: #111827;
+            --card: #151f2e;
+            --green: #a3ff2f;
+            --greenGlow: rgba(163, 255, 47, 0.35);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --border: rgba(163, 255, 47, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(circle at top, #172033 0%, #0b1220 70%);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 30px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1150px;
+
+            background: var(--panel);
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 0 30px rgba(163, 255, 47, 0.08),
+                0 20px 60px rgba(0, 0, 0, 0.55);
+        }
+
+        /* LEFT */
+        .left {
+            padding: 60px;
+
+            background:
+                linear-gradient(180deg, #0f1726, #111827);
+
+            color: var(--text);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left h1 {
+            font-size: 72px;
+            margin: 0;
+
+            color: var(--green);
+
+            letter-spacing: 4px;
+
+            text-shadow:
+                0 0 20px var(--greenGlow);
+        }
+
+        .left h3 {
+            margin-top: 10px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .left p {
+            margin-top: 25px;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 420px;
+        }
+
+        /* RIGHT */
+        .right {
+            padding: 60px;
+
+            background: #0f1726;
+
+            color: var(--text);
+        }
+
+        .right h2 {
+            font-size: 42px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .right p {
+            color: var(--muted);
+            margin-bottom: 35px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+
+            color: var(--green);
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 15px;
+
+            margin-bottom: 22px;
+
+            background: rgba(255, 255, 255, 0.03);
+
+            border: 1px solid var(--border);
+
+            border-radius: 16px;
+
+            color: white;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--green);
+
+            box-shadow:
+                0 0 15px var(--greenGlow);
+        }
+
+        .login-btn {
+            width: 100%;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 18px;
+
+            background: var(--green);
+
+            color: #0b1220;
+
+            font-size: 16px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 25px var(--greenGlow);
+        }
+
+        .footer {
+            margin-top: 28px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 15px;
+
+            margin-bottom: 22px;
+
+            background:
+                linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.02));
+
+            border: 1px solid var(--border);
+
+            border-radius: 16px;
+
+            color: white;
+
+            font-size: 14px;
+
+            outline: none;
+
+            cursor: pointer;
+
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+            transition: 0.25s;
+
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+            background-image:
+                linear-gradient(45deg, transparent 50%, var(--green) 50%),
+                linear-gradient(135deg, var(--green) 50%, transparent 50%);
+
+            background-position:
+                calc(100% - 20px) calc(50% - 3px),
+                calc(100% - 14px) calc(50% - 3px);
+
+            background-size: 6px 6px;
+            background-repeat: no-repeat;
+        }
+
+        select:hover {
+            border-color: rgba(163, 255, 47, 0.35);
+        }
+
+        select:focus {
+            border-color: var(--green);
+
+            box-shadow:
+                0 0 18px var(--greenGlow);
+        }
+
+        select option {
+            background: #111827;
+            color: white;
+        }
+
+        .back-btn {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            border: 1px solid var(--border);
+
+            color: var(--green);
+
+            text-decoration: none;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            margin-bottom: 35px;
+
+            transition: 0.25s;
+
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+
+            border-color: var(--green);
+
+            box-shadow:
+                0 0 18px var(--greenGlow);
+        }
+
+        @media(max-width:900px) {
+
+            .wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .left,
+            .right {
+                padding: 35px;
+            }
+
+            .left h1 {
+                font-size: 52px;
+            }
+
+            .right h2 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- LEFT PANEL -->
+        <div class="left">
+            <a href="/login" class="back-btn">←</a>
+            <h1>AICAS</h1>
+
+            <h3>AI-Powered Academic Assistant</h3>
+
+            <p>
+                AICAS is a smart academic platform designed to help
+                universities manage learning resources, assignments,
+                schedules, and intelligent student support in one system.
+            </p>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right">
+
+
+            <h2>AICAS Login</h2>
+
+            <p>
+                Connect to your university academic portal
+            </p>
+
+            <form>
+
+                <label>University</label>
+                <select id="university" required>
+                    <option value="">Select your university</option>
+                    <option value="International Islamic University Malaysia">International Islamic University Malaysia
+                    </option>
+                    <option value="UM">Universiti Malaya</option>
+                    <option value="UiTM">Universiti Teknologi MARA</option>
+                    <option value="UKM">Universiti Kebangsaan Malaysia</option>
+                </select>
+
+                <label>Student ID / Matric Number</label>
+                <input type="text" placeholder="Enter your student ID">
+
+                <label>Password</label>
+                <input type="password" placeholder="Enter your password">
+
+                <button class="login-btn">
+                    LOGIN TO AICAS
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+    <script>
+        document.querySelector("form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const university = document.getElementById("university").value;
+            const matric = document.querySelector("input[type='text']").value;
+            const password = document.querySelector("input[type='password']").value;
+
+            const response = await fetch("/login-student", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    university: university,
+                    matric: matric,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+                alert("Login success!");
+                localStorage.setItem("uid", data.uid);
+                localStorage.setItem("name", data.name);
+                localStorage.setItem("university", data.university);
+                localStorage.setItem("aicasStatus", data.aicasStatus);
+                window.location.href = data.redirect;
+            } else {
+                alert(data.message);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

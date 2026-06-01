@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- MAIN DASHBOARD CSS (UNCHANGED INLINE FOR NOW) -->
+    <style>
+        :root {
+            --primary: #1aa6a6;
+            --bg: #f5f8fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ===== NAVBAR ===== */
+        /* ===== NAVBAR ===== */
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 34px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #c98a00;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #526174;
+            margin-right: 28px;
+            font-size: 15px;
+            padding: 24px 0;
+            position: relative;
+        }
+
+        .nav-links a.active {
+            color: #0ea5b7;
+        }
+
+        .nav-links a.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #0ea5b7;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #cbd5e1;
+        }
+
+        .badge {
+            background: #ef4444;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 999px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #cbd5e1;
+        }
+
+        /* ===== MAIN ===== */
+        .container {
+            padding: 75px 48px;
+            max-width: 80%;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 24px;
+        }
+
+        /* ===== STATS ===== */
+        .stats {
+            background: var(--card);
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 40px;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #e6fffa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .stat h2 {
+            font-size: 22px;
+        }
+
+        .stat p {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+        }
+
+        select,
+        input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 14px;
+        }
+
+        .empty-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .month {
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 16px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 24px;
+                gap: 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-right span {
+                display: none;
+            }
+        }
+    </style>
+
+    <!-- ✅ CHATBOT CSS (EXTERNAL) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <div class="logo">iTaleem</div>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#" class="active">Dashboard</a>
+                <a href="/materials">My Courses</a>
+                <a href="#">Tutorials</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <span>Recent</span>
+            <span class="badge">45</span>
+            <div class="avatar"></div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="container">
+
+        <h1 id="greeting">Hi, ! 👋</h1>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-icon">✓</div>
+                <div>
+                    <h2>13</h2>
+                    <p>Courses Enrolled</p>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon">✓</div>
+                <div>
+                    <h2>0</h2>
+                    <p>Courses Completed</p>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon">✓</div>
+                <div>
+                    <h2>0</h2>
+                    <p>Activities Completed</p>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon">≡</div>
+                <div>
+                    <h2>0</h2>
+                    <p>Activities Due</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h3>Timeline</h3>
+                <div class="filters">
+                    <select>
+                        <option>Next 7 days</option>
+                    </select>
+                    <select>
+                        <option>Sort by dates</option>
+                    </select>
+                    <input type="text" placeholder="Search by activity type or name">
+                </div>
+            </div>
+
+            <div id="timelineList" class="empty-card">
+                No upcoming activities due
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="calendar-header">
+                <select>
+                    <option>All courses</option>
+                </select>
+                <button class="btn">New event</button>
+            </div>
+
+            <div class="calendar-header">
+                <span>◀</span>
+                <span class="month">January 2026</span>
+                <span>▶</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="aicasChatbotBox" style="display:none;">
+        {% include "chatbot.html" %}
+    </div>
+
+    <script>
+
+        async function checkAicasAccess() {
+
+            const uid = localStorage.getItem("uid");
+
+            if (!uid) return;
+
+            const res = await fetch("/check-aicas-status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    uid: uid
+                })
+            });
+
+            const data = await res.json();
+
+            if (
+                data.status === "success" &&
+                data.aicasStatus === true
+            ) {
+                document.getElementById("aicasChatbotBox").style.display = "block";
+            }
+        }
+
+        checkAicasAccess();
+
+    </script>
+
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+    <script>
+        async function loadUserName() {
+
+            const uid = localStorage.getItem("uid");
+
+            if (!uid) return;
+
+            const res = await fetch("/get-user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ uid })
+            });
+
+            const data = await res.json();
+
+            if (data.status === "success") {
+                document.getElementById("greeting").innerText =
+                    "Hi, " + data.name + " 👋";
+            }
+        }
+
+        loadUserName();
+    </script>
+    <script>
+        async function loadAssignmentsTimeline() {
+            const uid = localStorage.getItem("uid");
+            const timelineList = document.getElementById("timelineList");
+
+            if (!uid) {
+                timelineList.innerHTML = "No user logged in";
+                return;
+            }
+
+            const res = await fetch("/get-assignments-timeline", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ uid })
+            });
+
+            const data = await res.json();
+
+            if (data.status !== "success" || data.assignments.length === 0) {
+                timelineList.innerHTML = "No upcoming activities due";
+                return;
+            }
+
+            timelineList.innerHTML = data.assignments.map(item => `
+
+<div onclick="window.location.href='/submission/${item.courseCode}/${item.id}'" style="
+    background:white;
+    padding:24px;
+    border-radius:16px;
+    margin-bottom:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+">
+
+    <div style="
+        display:flex;
+        align-items:flex-start;
+        gap:20px;
+    ">
+
+        <!-- LEFT ICON -->
+        <div style="
+            width:72px;
+            height:72px;
+            background:#ec5aa6;
+            border-radius:18px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:34px;
+            color:white;
+        ">
+            📄
+        </div>
+
+        <!-- TEXT -->
+        <div>
+
+            <h3 style="
+                margin:0;
+                font-size:20px;
+                color:#1f2937;
+            ">
+                Submission: ${item.title}
+            </h3>
+
+            <p style="
+                margin-top:6px;
+                color:#6b7280;
+            ">
+                ${item.courseCode} ${item.courseName} - Assignment is due
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+`).join("");
+        }
+
+        loadAssignmentsTimeline();
+    </script>
+
+</body>
+
+</html>

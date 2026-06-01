@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>iTa'LeEm Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --primary: #1aa6a6;
+            --primary-dark: #148f8f;
+            --bg: #f3f7f9;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(120deg, #0f4c81, #1aa6a6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .wrapper {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--card);
+            border-radius: 20px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ===== LEFT PANEL ===== */
+        .left {
+            padding: 48px;
+            background: linear-gradient(160deg, #0f4c81, #136fa3);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left img {
+            width: 64px;
+            margin-bottom: 24px;
+        }
+
+        .left h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .left p {
+            font-size: 15px;
+            opacity: 0.9;
+            max-width: 380px;
+        }
+
+        /* ===== RIGHT PANEL ===== */
+        .right {
+            padding: 48px;
+        }
+
+        .right h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .right p {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .cas-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .cas-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ===== FORM ===== */
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .forgot {
+            text-align: right;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .forgot a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 900px) {
+            .wrapper {
+                grid-template-columns: 1fr;
+                border-radius: 0;
+                height: 100vh;
+            }
+
+            .left {
+                padding: 32px;
+                text-align: center;
+            }
+
+            .left p {
+                margin: auto;
+            }
+
+            .right {
+                padding: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- LEFT -->
+        <div class="left">
+            <img src="{{ url_for('static', filename='images/iium.png') }}">
+            <h1>Welcome to iTa'LeEm</h1>
+            <p>
+                Your integrated teaching and learning environment.
+                Access courses, activities, and academic resources in one place.
+            </p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+            <h2>Sign in</h2>
+            <p>Login using your university or personal account</p>
+
+            <button class="cas-btn" id="bio-btn">IIUM Student & Staff Login</button>
+
+
+            <div class="divider">or</div>
+
+            <form>
+                <label>Username</label>
+                <input type="text" placeholder="Enter your username">
+
+                <label>Password</label>
+                <input type="password" placeholder="Enter your password">
+
+                <div class="forgot">
+                    <a href="#">Forgot your password?</a>
+                </div>
+
+                <button class="login-btn">Log in</button>
+                <div style="
+    text-align:center;
+    margin-top:20px;
+">
+                    <a href="/aicas-login" style="
+        color:#0ea5b7;
+        text-decoration:none;
+        font-weight:600;
+        font-size:14px;
+    ">
+                        Connect to AICAS
+                    </a>
+                </div>
+            </form>
+
+            <div class="footer">
+                <a href="/register">Register New User</a>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        document.querySelector("form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const matric = document.querySelector("input[type='text']").value;
+            const password = document.querySelector("input[type='password']").value;
+
+            const response = await fetch("/login-student", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    matric: matric,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+                alert("Login success!");
+                localStorage.setItem("uid", data.uid);
+                localStorage.setItem("name", data.name);
+                window.location.href = data.redirect; // change later
+            } else {
+                alert(data.message);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

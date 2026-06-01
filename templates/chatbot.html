@@ -1,0 +1,77 @@
+<!-- CHAT BUTTON -->
+<div class="chatbot-btn" onclick="toggleChat()">💬</div>
+
+<!-- CHAT OVERLAY (FULL SCREEN MODE) -->
+<div class="chatbot-overlay" id="chatOverlay">
+
+    <div class="chatbot-panel" id="chatPanel">
+
+        <!-- HEADER -->
+        <div class="chat-header">
+            <span id="chat-title">AICAS</span>
+
+            <div>
+                <button onclick="toggleExpand()" id="expandBtn">⛶</button>
+                <button onclick="toggleChat()">✕</button>
+            </div>
+        </div>
+
+        <!-- FLEX CONTAINER (always exists) -->
+        <div class="chat-layout">
+
+            <!-- LEFT -->
+            <div class="chat-left">
+                <h3 class="history-heading">History</h3>
+
+                <button class="new-chat-btn" onclick="startNewChat()">
+                    + New Chat
+                </button>
+
+                <div id="chatHistoryList" class="chat-history-list"></div>
+            </div>
+
+            <div class="resizer" id="resizer-left"></div>
+
+            <!-- CENTER (chat stays here ALWAYS) -->
+            <div class="chat-center">
+
+                <div class="chat-body" id="chatBody">
+                    <p class="bot-msg msg">Hi! How can I help you?</p>
+                </div>
+
+                <div class="selected-file" id="selectedFile"></div>
+
+                <div class="chat-input">
+                    <input type="file" id="chatFile" hidden>
+
+                    <button onclick="document.getElementById('chatFile').click()">📎</button>
+                    <input type="text" id="chatInput">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+
+            </div>
+
+            <div class="resizer" id="resizer-right"></div>
+
+            <div class="chat-right" id="rightPanel">
+                <div id="toolHome">
+                    <div class="tool-grid">
+                        <button class="tool-btn" onclick="generateQuiz()">Quiz</button>
+                        <button class="tool-btn" onclick="generateFlashcards()">Flashcards</button>
+                        <button class="tool-btn" onclick="generateSummary()">Summary</button>
+                        <button class="tool-btn" onclick="openStudyPlanForm()">Study Plan</button>
+                        <button class="tool-btn" onclick="generateKeyTerms()">Key Terms</button>
+                        <button class="tool-btn" onclick="explainBeginner()">Beginner Mode</button>
+                    </div>
+
+                    <hr class="tool-divider">
+
+                    <h3 class="recent-title">Recently Created</h3>
+                    <div id="recentToolsList" class="recent-tools-list"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
