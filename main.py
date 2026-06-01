@@ -1,6 +1,6 @@
 from pydoc import doc
 from flask import Flask, render_template, request, jsonify
-import os, secrets
+import os, secrets, json
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from dotenv import load_dotenv
@@ -27,7 +27,20 @@ GROQ_MODEL = "llama-3.1-8b-instant"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "submissions")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-cred = credentials.Certificate(os.path.join(BASE_DIR, "firebase_key.json"))
+
+firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
+
+if firebase_credentials:
+
+    cred = credentials.Certificate(
+        json.loads(firebase_credentials)
+    )
+
+else:
+
+    cred = credentials.Certificate(
+        os.path.join(BASE_DIR, "firebase_key.json")
+    )
 
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
