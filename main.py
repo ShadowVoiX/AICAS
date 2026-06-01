@@ -176,7 +176,7 @@ def login_student():
         result = res.json()
 
         if "idToken" not in result:
-            return jsonify({"status": "fail", "message": "Invalid credentials"})
+            return jsonify({"status": "fail","message": str(result)})
 
         user_record = auth.get_user_by_email(email)
 
